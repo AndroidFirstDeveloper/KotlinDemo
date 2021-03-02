@@ -1,0 +1,37 @@
+ext {
+    android = [
+            compileSdkVersion: 30,
+            buildToolsVersion: "29.0.3",
+            minSdkVersion    : 19,
+            targetSdkVersion : 30,
+            versionCode      : 1,
+            versionName      : "1.0"
+    ]
+    versions = [
+            constraintlayout: "2.0.4",
+            appcompat       : "1.2.0",
+            core            : "1.3.2",
+            kotlin          : "1.3.72",
+            junit           : "4.+",
+            testjunit       : "1.1.2",
+            testespresso    : "3.3.0",
+            kotlinstdlib    : "1.3.72",
+            material        : "1.2.1",
+            kotlincoroutines: "1.4.0"
+    ]
+    dependences = [
+            constraintlayout : "androidx.constraintlayout:constraintlayout:${versions.constraintlayout}",
+            appcompat        : "androidx.appcompat:appcompat:${versions.appcompat}",
+            core             : "androidx.core:core-ktx:${versions.core}",
+            kotlin           : "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
+            junit            : "junit:junit:${versions.junit}",
+            testjunit        : "androidx.test.ext:junit:${versions.testjunit}",
+            testespresso     : "androidx.test.espresso:espresso-core:${versions.testespresso}",
+            kotlinstdlib     : "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlinstdlib}",
+            material         : "com.google.android.material:material:${versions.material}",
+            //依赖协程核心库
+            coroutinescore   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlincoroutines}",
+            //依赖当前平台所对应的平台库
+            coroutinesandroid: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlincoroutines}"
+    ]
+}
