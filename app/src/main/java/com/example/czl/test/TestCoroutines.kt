@@ -11,6 +11,355 @@ import java.net.URL
 
 class TestCoroutines {
 
+    /**测试协程构建器默认的线程*/
+    fun test23() {
+        CoroutineScope(Dispatchers.Main).launch {
+            launch {
+                println("thread name：${Thread.currentThread().name}")//main
+            }
+            async {
+                println("thread name：${Thread.currentThread().name}")//main
+            }
+        }
+    }
+
+    /**测试Thread.sleep跟delay的区别*/
+    fun test22() {
+        CoroutineScope(Dispatchers.Main).launch {
+            launch {
+                println("start thread name ${Thread.currentThread().name}")
+                delay(5000)//从结果来看，delay是不会阻塞父协程中的代码执行的，就好比不会阻塞main线程。同时等待时间结束后，代码继续执行，同时不用显示处理异常(CancelIation)，thread的话必须要加try-catch否则编译报错
+                println("continue thread name ${Thread.currentThread().name}")
+                println("end thread name ${Thread.currentThread().name}")
+            }
+            delay(100)//从结果来看，如果没有这行代码的话，子协程中代码执行顺序一般在父协程之后
+            println("main start")
+            println("main quit")
+        }
+    }
+
+    private val threadLocal = ThreadLocal<String>()
+
+    /**测试在协程间传值*/
+    fun test21() {
+        CoroutineScope(Dispatchers.Main).launch {
+            threadLocal.set("main")
+            println("1-Thread name：${Thread.currentThread().name},thread local value：${threadLocal.get()}")//thread local 的值是main
+            launch(Dispatchers.IO + threadLocal.asContextElement("launch")) {
+                println("2-Thread name：${Thread.currentThread().name},thread local value：${threadLocal.get()}")//thread local 的值是launch
+//                yield()
+                delay(1000)
+                println("2-Thread name：${Thread.currentThread().name},thread local value：${threadLocal.get()}")//thread local 的值是launch
+            }
+        }
+    }
+
+    class MyActivity {
+        //这里定义两个scope为了验证协程的取消跟任务执行的线程是无关的
+        private val mainScope = MainScope()
+        private val ioScope = CoroutineScope(Dispatchers.IO)
+
+        fun onCreate() {
+            println("页面启动")
+            repeat(10) { i ->
+                mainScope.launch {
+                    val time = (i + 1) * 300
+                    delay(time.toLong())
+                    println("task $i have conduct")
+                }
+            }
+        }
+
+        fun onStart() {
+            println("页面可见")
+            repeat(1000) { i ->
+                ioScope.launch {
+                    delay((200 * (i + 1)).toLong())
+                    println("iotask $i was conducted")
+                }
+            }
+        }
+
+        fun onDestroy() {
+            println("页面关闭")
+            mainScope.cancel()//结果证明协程中未执行到的挂起都能被取消
+            ioScope.cancel()//结果证明协程中未执行到的挂起都能被取消
+        }
+    }
+
+    /**协程作用域
+    在实际开发中，有时需要根据页面的生命周期做不同的事情，比如页面启动时加载数据，页面关闭时销毁或者停止加载数据，
+    这时就需要通过一个协程管理多个任务的生命周期*/
+    fun test20() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val activity = MyActivity()
+            activity.onCreate()//启动页面
+            activity.onStart()
+            delay(1000)//模拟页面正常显示操作部分
+            activity.onDestroy()//关闭页面
+            delay(1000)
+        }
+    }
+
+    /**命名协程用于调试
+    组合协程上下文中的元素*/
+    fun test19() {
+        CoroutineScope(Dispatchers.Main).launch {
+            launch(CoroutineName("pig")) {
+                println("thread name：${Thread.currentThread().name}")
+            }
+            async(CoroutineName("dog")) {
+                println("thread name：${Thread.currentThread().name}")
+            }
+            launch(Dispatchers.IO + CoroutineName("CAT")) {
+                println("thread name：${Thread.currentThread().name}")
+            }
+        }
+    }
+
+    fun test18() {
+        CoroutineScope(Dispatchers.Main).launch {
+            //当调用 launch { …… } 时不传参数，它从启动了它的 CoroutineScope 中承袭了上下文（以及调度器
+            launch {
+                println("使用默认launch构建协程，thread name：${Thread.currentThread().name}")//协程的上下文跟外部协程上下文一致
+            }
+            async {
+                println("使用默认async构建协程，thread name：${Thread.currentThread().name}")//协程的上下文跟外部协程上下文一致
+            }
+
+            launch(Dispatchers.IO) {
+                println("使用指定上下文launch构建协程，thread name：${Thread.currentThread().name}")//协程上下文是IO
+            }
+            async(Dispatchers.IO) {
+                println("使用指定上下文async构建协程，thread name：${Thread.currentThread().name}")//协程上下文是IO
+            }
+        }
+    }
+
+    /**父协程被取消，子协程不一定取消。*/
+    fun test17_1() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val job = CoroutineScope(Dispatchers.Main).launch {
+                val job1 = GlobalScope.launch {
+                    repeat(1000) {
+                        delay(500)
+                        println("job1 sleeping 500")//当取消父协程的时候，该协程没有取消，因为该协程的Job跟外部协程Job无关
+                    }
+                }
+                val job2 = launch(Dispatchers.IO) {
+                    repeat(1000) {
+                        delay(500)
+                        println("job2 sleeping 500")//当取消父协程的时候，该协程被取消
+                    }
+                }
+                val job3 = CoroutineScope(Dispatchers.IO).launch {
+                    repeat(1000) {
+                        delay(500)
+                        println("job3 sleeping 500")//当取消父协程的时候，该协程没有取消，因为该协程的job跟外部协程job无关
+                    }
+                }
+            }
+
+            delay(1300)
+            println("main i am tired")
+            job.cancelAndJoin()
+            println("main i am quit")
+        }
+    }
+
+    /**当父协程被取消，子协程也被取消*/
+    fun test17() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val job1 = CoroutineScope(Dispatchers.Main).launch {
+                val job2 = launch(Dispatchers.IO) {
+                    try {
+                        repeat(1000) {
+                            delay(500)
+                            println("i am sleeping 500")
+                        }
+                    } catch (cancel: CancellationException) {
+                        println("任务呗取消")
+                    } finally {
+                        println("释放资源，关闭连接")
+                    }
+                }
+            }
+            delay(2000)
+            println("main i am tired")
+            job1.cancelAndJoin()
+            println("main i am quit")
+        }
+    }
+
+    /**
+    运行可取消的代码块
+    在取消的协程中调用挂起函数
+     */
+    fun test16() {
+        val job = CoroutineScope(Dispatchers.Main).launch {
+            val job = launch(Dispatchers.IO) {
+                try {
+                    repeat(1000) {
+                        delay(500)
+                        println("i am sleeping 500")
+                    }
+                } finally {
+                    withContext(NonCancellable) {//不取消
+                        delay(1000)//挂起函数
+                        println("清理资源，关闭连接")//这一行代码能执行
+                    }
+                }
+            }
+            delay(1300)
+            println("main i am tired")
+            job.cancelAndJoin()
+            println("main i am quit")
+        }
+    }
+
+    /**运行不可取消的代码块*/
+    fun test15() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val job = launch(Dispatchers.IO) {
+                try {
+                    repeat(1000) {
+                        delay(500)
+                        println("i am sleeping $it")
+                    }
+                } finally {
+                    delay(1000)//调用挂起函数
+                    println("清理资源，关闭连接")//这一行代码不会执行，调用挂起函数(finally中的)的时候会检查协程的状态，此时任务已经取消了所以会抛出异常(CancellationException)，所以出于异常之后的代码就不会执行到
+                }
+            }
+            delay(1300)
+            println("main i am tired")
+            job.cancelAndJoin()
+            println("main i am quit")
+        }
+    }
+
+    /**使用yield方法取消计算的任务*/
+    fun test14() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val job = launch(Dispatchers.IO) {
+                var startTime = System.currentTimeMillis()
+                var i = 0
+                try {
+                    while (i < 5) {
+                        yield()
+                        if (System.currentTimeMillis() > startTime) {
+                            println("i am sleeping ${i++}")
+                            startTime += 500
+                        }
+                    }
+                } catch (cancel: CancellationException) {
+                    println("计算任务被取消")
+                } finally {
+                    println("清理资源，关闭连接")
+                }
+            }
+            delay(1300)
+            println("main i am tired")
+            job.cancelAndJoin()
+            println("main i am quit")
+        }
+    }
+
+    /*使用isActive属性取消计算的任务*/
+    fun test13() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val job = launch(Dispatchers.IO) {
+                var startTime = System.currentTimeMillis()
+                try {
+//                    while (isActive) {//方式1
+                    while (coroutineContext[Job]?.isActive == true) {//方式2 这两种写法效果是一样的，因为查看isActive的源码就是方式2
+                        if (System.currentTimeMillis() > startTime) {
+                            println("i am sleeping 500")
+                            startTime += 500
+                        }
+                    }
+                } catch (cancel: CancellationException) {
+                    println("计算任务呗取消")
+                } finally {
+                    println("清理资源，关闭连接")
+                }
+            }
+            delay(1300)
+            println("main i am tired")
+            job.cancelAndJoin()
+            println("main i am quit")
+        }
+    }
+
+    fun test12() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val job = launch(Dispatchers.IO) {//launch不指定线程的话默认是外部上下文线程
+                println("current thread name：${Thread.currentThread().name}")//输出IO线程
+                try {
+                    repeat(1000) {
+                        delay(500)
+                        println("i am sleeping $it")
+                    }
+                } catch (cancel: CancellationException) {
+                    println("task is canceled")//当任务被取消会执行
+                } finally {
+                    println("i am in finally")//任务结束(正常/非正常)的时候会执行,在这里可以进行释放资源，关闭连接操作
+                }
+            }
+            delay(1300)
+            println("main i am starting ...")
+            job.cancel()//取消协程，立即返回
+            job.join()//阻塞当前线程。协程取消了这里还要调用join是因为取消后不一定立即结束，join阻塞等待协程结束再继续执行下面的代码
+            println("main i am quit")
+        }
+    }
+
+    fun test11() {
+        CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.IO).launch {
+                withTimeout(2000) {//超时后下面任务自动停止输出，超时后没有显示的输出异常
+                    println("current thread name：${Thread.currentThread().name}")//输出IO线程
+                    repeat(1000) {
+                        delay(500)
+                        println("i am sleeping $it")
+                    }
+                }
+            }
+            println("i am main fast")//这行会先输出
+        }
+    }
+
+    fun test10() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val result1: Deferred<Int> = async {//带返回结果的异步任务
+                repeat(10) {
+                    delay(500)
+                    println("i am sleeping $it")
+                }
+                10
+            }
+            println("main i am start waiting ...")//会立即打印
+            println("main i am waiting the result：${result1.await()}")//一直等待async任务执行结束
+            println("main i am quit")//async任务执行结束才会执行到这里
+        }
+    }
+
+    fun test9() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val job = launch(Dispatchers.IO) {
+                repeat(1000) {
+                    delay(500)
+                    println("I am sleeping $it")
+                }
+            }
+            delay(1300)//挂起一段时间，继续向下执行代码
+            println("main I am tired")
+            job.cancel()//取消任务
+//            job.join()//这一行好像没什么用，因为输出没有变化
+            println("main i am quit")//这行代码先执行完毕，任务如果不取消的话，任务会继续输出
+        }
+    }
+
     /**使用async的结构化并发测试报错
      * 从打印结果中可知，test8方法中第二个协程未受到异常的影响（前提异常已经被捕获掉）
      * */

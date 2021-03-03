@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     fun useCoroutines(view: View) {
         val testCoroutines = TestCoroutines()
-        testCoroutines.test1(activity_main_iv)
+//        testCoroutines.test1(activity_main_iv)
 //        testCoroutines.test2()
 //        testCoroutines.test3()
 //        testCoroutines.test4(activity_main_iv1,activity_main_iv2)
@@ -55,6 +55,22 @@ class MainActivity : AppCompatActivity() {
 //        testCoroutines.test6()
 //        testCoroutines.test7()
 //        testCoroutines.test8()
+//        testCoroutines.test9()
+//        testCoroutines.test10()
+//        testCoroutines.test11()
+//        testCoroutines.test12()
+//        testCoroutines.test13()
+//        testCoroutines.test14()
+//        testCoroutines.test15()
+//        testCoroutines.test16()
+//        testCoroutines.test17()
+//        testCoroutines.test17_1()
+//        testCoroutines.test18()
+//        testCoroutines.test19()
+//        testCoroutines.test20()
+//        testCoroutines.test21()
+//        testCoroutines.test22()
+        testCoroutines.test23()
     }
 
     fun openRVActivity(view: View) {
