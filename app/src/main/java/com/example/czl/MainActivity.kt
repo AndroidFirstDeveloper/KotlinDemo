@@ -70,7 +70,26 @@ class MainActivity : AppCompatActivity() {
 //        testCoroutines.test20()
 //        testCoroutines.test21()
 //        testCoroutines.test22()
-        testCoroutines.test23()
+//        testCoroutines.test23()
+
+        //流
+        val testFlow = TestFlow()
+//        testFlow.test1()
+//        testFlow.test2()
+//        testFlow.test3()
+//        testFlow.test4()
+//        testFlow.test5()
+//        testFlow.test6()
+//        testFlow.test7()
+//        testFlow.test8()
+//        testFlow.test9()
+//        testFlow.test10()
+//        testFlow.test11()
+//        testFlow.test12()
+//        testFlow.test13()
+//        testFlow.test14()
+//        testFlow.test15()
+        testFlow.test16()
     }
 
     fun openRVActivity(view: View) {
