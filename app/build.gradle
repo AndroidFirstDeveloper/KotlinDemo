@@ -46,4 +46,6 @@ dependencies {
     androidTestImplementation rootProject.ext.dependences.testespresso
     implementation rootProject.ext.dependences.coroutinescore
     implementation rootProject.ext.dependences.coroutinesandroid
+    implementation rootProject.ext.dependences.retrofit
+    implementation rootProject.ext.dependences.retrofitConvert
 }

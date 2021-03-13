@@ -21,6 +21,55 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:onClick="testPrivacy"
+            android:text="测试Android10存储分区"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:onClick="start1"
+            android:text="测试start启动Service"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:onClick="bind1"
+            android:text="测试bind启动Service"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:onClick="openFragment1"
+            android:text="测试Fragment生命周期"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:onClick="openActivity1"
+            android:text="测试Activity生命周期"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
         <Button
             android:layout_width="match_parent"
@@ -30,10 +79,7 @@
             android:text="test"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="16sp" />
 
         <Button
             android:layout_width="match_parent"
@@ -43,10 +89,7 @@
             android:text="open SecondActivity"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/activity_main_btn"
@@ -74,6 +117,27 @@
             android:layout_margin="20dp"
             android:onClick="openRVActivity"
             android:text="openRVActivity"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+
+
+        <Button
+            android:id="@+id/activity_main_load_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:onClick="load"
+            android:text="加载服务端数据"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/activity_main_type_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:onClick="typeTest"
+            android:text="测试参数类型"
             android:textAllCaps="false"
             android:textSize="16sp" />
 

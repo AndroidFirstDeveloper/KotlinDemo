@@ -17,7 +17,9 @@ ext {
             testespresso    : "3.3.0",
             kotlinstdlib    : "1.3.72",
             material        : "1.2.1",
-            kotlincoroutines: "1.4.0"
+            kotlincoroutines: "1.4.0",
+            retrofitV       : "2.9.0",
+            retrofitConvertV: "2.9.0"
     ]
     dependences = [
             constraintlayout : "androidx.constraintlayout:constraintlayout:${versions.constraintlayout}",
@@ -32,6 +34,9 @@ ext {
             //依赖协程核心库
             coroutinescore   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlincoroutines}",
             //依赖当前平台所对应的平台库
-            coroutinesandroid: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlincoroutines}"
+            coroutinesandroid: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlincoroutines}",
+            retrofit         : "com.squareup.retrofit2:retrofit:${versions.retrofitV}",
+            retrofitConvert  : "com.squareup.retrofit2:converter-gson:${versions.retrofitConvertV}"
+
     ]
 }

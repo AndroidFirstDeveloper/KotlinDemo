@@ -8,7 +8,19 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.example.czl.component.Activity1
+import com.example.czl.component.Fragment1Activity
+import com.example.czl.component.Service1Activity
+import com.example.czl.component.Service2Activity
+import com.example.czl.privacy.PrivacyActivity
 import com.example.czl.test.*
+import kotlinx.coroutines.*
+import java.io.File
+import java.io.InputStream
+import java.lang.StringBuilder
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLConnection
 
 class MainActivity : AppCompatActivity() {
     /**非空属性必须在定义的时候初始化,kotlin提供了一种可以延迟初始化的方案,使用 lateinit*/
@@ -43,6 +55,71 @@ class MainActivity : AppCompatActivity() {
                 TestRealUse.addDetailView(p0?.context, detailContainer)
             }
         })
+    }
+
+    fun testPrivacy(view: View) {
+        val intent = Intent(MainActivity@ this, PrivacyActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun testAndroidQ() {
+        val file = externalCacheDir
+        val file2 = cacheDir
+        var path = ""
+        var path2 = ""
+        if (file != null) {
+            path = file.absolutePath
+            println("应用外部专属缓存目录：" + path)
+        }
+        if (file2 != null) {
+            path2 = file2.absolutePath
+            println("应用内部专属缓存目录：" + path2)
+        }
+        //尝试在应用专属目录下创建一个日志文件夹
+        if (path.isNotEmpty()) {
+            val directory = path + File.separator + "log"
+            val directoryFile = File(directory)
+            if (directoryFile.exists()) {
+                println("目录已存在：" + directoryFile.path)
+                val txtFile = File(directoryFile, "today.txt")
+                if (!txtFile.exists()) {
+                    println("创建today.txt文件")
+                    txtFile.createNewFile()
+                } else {
+                    println("today.txt文件已存在")
+                }
+            } else {
+                println("创建目录：" + directoryFile.path)
+                directoryFile.mkdirs()
+            }
+        }
+        /*if (path2.isNotEmpty()) {
+            val file = File(path2, "log")
+            if (!file.exists()) {
+                file.mkdirs()
+            }
+        }*/
+    }
+
+    fun start1(view: View) {
+        testAndroidQ()
+        val intent = Intent(MainActivity@ this, Service1Activity::class.java)
+        startActivity(intent)
+    }
+
+    fun bind1(view: View) {
+        val intent = Intent(MainActivity@ this, Service2Activity::class.java)
+        startActivity(intent)
+    }
+
+    fun openFragment1(view: View) {
+        val intent = Intent(MainActivity@ this, Fragment1Activity::class.java)
+        startActivity(intent)
+    }
+
+    fun openActivity1(view: View) {
+        val intent = Intent(MainActivity@ this, Activity1::class.java)
+        startActivity(intent)
     }
 
     fun useCoroutines(view: View) {
@@ -89,7 +166,44 @@ class MainActivity : AppCompatActivity() {
 //        testFlow.test13()
 //        testFlow.test14()
 //        testFlow.test15()
-        testFlow.test16()
+//        testFlow.test16()
+
+//        val testGson=TestGson()
+//        testGson.test1()
+
+        val testAlgorithm = TestAlgorithm()
+        /*testAlgorithm.test1()
+        testAlgorithm.test2()
+        testAlgorithm.test3()
+        testAlgorithm.test4()
+        testAlgorithm.test5()
+        testAlgorithm.test6()
+        testAlgorithm.test7()
+        testAlgorithm.test8()
+        testAlgorithm.test9()
+        testAlgorithm.test10()
+        testAlgorithm.test11()
+        testAlgorithm.test12()
+        testAlgorithm.test13()
+        testAlgorithm.test14()
+        testAlgorithm.test15()
+        testAlgorithm.test15_1()
+        testAlgorithm.test15_2()
+        testAlgorithm.test16()
+        testAlgorithm.test17()
+        testAlgorithm.test18()
+        testAlgorithm.test19()
+        testAlgorithm.test20()
+        testAlgorithm.test21()
+        testAlgorithm.test22()*/
+//        testAlgorithm.test23()
+//        testAlgorithm.test24()
+//        testAlgorithm.test25()
+//        testAlgorithm.test26()
+        testAlgorithm.test27()
+
+//        val testTree=TestTree()
+//        testTree.test()
     }
 
     fun openRVActivity(view: View) {
@@ -99,6 +213,11 @@ class MainActivity : AppCompatActivity() {
 
     public fun test(view: View) {
         testGrammer()
+    }
+
+    public fun typeTest(view: View) {
+        val testParameterType = TestParameterType()
+        testParameterType.test()
     }
 
     /**测试序列化对象传值*/
@@ -224,5 +343,55 @@ class MainActivity : AppCompatActivity() {
 
         val testObjectExpress = TestObjectExpress();
         testObjectExpress.myTest()
+    }
+
+    fun load(view: View) {
+//        loadServerData()
+        val testRetrofit = TestRetrofit()
+//        testRetrofit.test1()
+//        testRetrofit.test2()
+//        testRetrofit.test3()
+//        testRetrofit.test4()
+        testRetrofit.test5()
+    }
+
+    private fun loadServerData() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val job = launch(Dispatchers.IO) {
+//                while (isActive) {
+                println("开始加载资源")
+                val url = URL("http://219.141.190.225/api/configuration/all")
+                val stringBuilder = StringBuilder()
+                lateinit var inputStream: InputStream
+                lateinit var connection: URLConnection
+
+                try {
+                    delay(200)
+                    connection = url.openConnection()
+                    connection.connectTimeout = 100000
+                    connection.readTimeout = 100000
+                    connection.connect()
+                    inputStream = connection.inputStream
+                    while (inputStream.read() != -1) {
+                        val byteArray = ByteArray(2048)
+                        inputStream.read(byteArray)
+                        val string = String(byteArray)
+                        stringBuilder.append(string)
+                    }
+                } catch (e: Exception) {
+                    println("Caught $e")
+                } finally {
+                    println("关闭连接，释放资源")
+                    inputStream?.close()
+                }
+                println(stringBuilder.toString())
+//                }
+            }
+            delay(1000)
+            println("main i am tired")
+//            job.cancelAndJoin()
+            job.cancel()
+            println("main i am quit")
+        }
     }
 }
