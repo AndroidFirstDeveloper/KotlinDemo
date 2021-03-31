@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.czl">
-
+    package="com.example.czl2">
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
-        android:name=".MyApplication"
+        android:name="com.example.czl2.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,21 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Czl">
-        <activity android:name=".privacy.PrivacyActivity"></activity>
-        <activity android:name=".component.Service2Activity" />
-        <activity android:name=".component.Service1Activity" />
+        <activity android:name="com.example.czl2.privacy.PrivacyActivity"></activity>
+        <activity android:name="com.example.czl2.component.Service2Activity" />
+        <activity android:name="com.example.czl2.component.Service1Activity" />
 
         <service
-            android:name=".component.Service1"
+            android:name="com.example.czl2.component.Service1"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".component.Fragment1Activity" />
-        <activity android:name=".component.Activity2" />
-        <activity android:name=".component.Activity1" />
-        <activity android:name=".RVActivity" />
-        <activity android:name=".SecondActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.czl2.component.Fragment1Activity" />
+        <activity android:name="com.example.czl2.component.Activity2" />
+        <activity android:name="com.example.czl2.component.Activity1" />
+        <activity android:name="com.example.czl2.RVActivity" />
+        <activity android:name="com.example.czl2.SecondActivity" />
+        <activity android:name="com.example.czl2.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

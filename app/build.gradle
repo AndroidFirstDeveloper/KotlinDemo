@@ -8,12 +8,13 @@ android {
     buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.example.czl"
+        applicationId "com.example.czl2"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {annotationProcessorOptions{ arguments=[eventBusIndex: 'com.example.czl2.MyEventBusIndex']}}
     }
 
     buildTypes {
@@ -48,4 +49,6 @@ dependencies {
     implementation rootProject.ext.dependences.coroutinesandroid
     implementation rootProject.ext.dependences.retrofit
     implementation rootProject.ext.dependences.retrofitConvert
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.0.1'
 }

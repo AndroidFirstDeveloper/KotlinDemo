@@ -8,6 +8,46 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="20dp"
+        android:onClick="openFileManager"
+        android:text="打开文件管理器"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:onClick="readPublicFile"
+        android:text="读取外部公共文件(外部)1"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:onClick="readPublicFile2"
+        android:text="读取外部公共文件(外部)2"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:onClick="createPublicFile"
+        android:text="创建当前应用的公共文件(外部)"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
         android:onClick="createOwnFile"
         android:text="创建当前应用的专属文件(外部)"
         android:textAllCaps="false"

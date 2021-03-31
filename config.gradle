@@ -37,6 +37,5 @@ ext {
             coroutinesandroid: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlincoroutines}",
             retrofit         : "com.squareup.retrofit2:retrofit:${versions.retrofitV}",
             retrofitConvert  : "com.squareup.retrofit2:converter-gson:${versions.retrofitConvertV}"
-
     ]
 }
